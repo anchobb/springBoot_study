@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>TEST2</h1>
+NAME : <span th:text="${name}"></span>
+<hr>
+ID : <span th:text="${memo.id}"></span>
+TEXT : <span th:text="${memo.text}"></span>
+<hr>
+<th:block>
+    <div th:if="${isMember}">
+        This is th:if TEST !
+    </div>
+</th:block>
+
+<th:block>
+    <div th:unless="${isMember}">
+        This is th:unless TEST !
+    </div>
+</th:block>
+<hr>
+<th:block>
+    <div th:each="dto:${memoList}">
+        <span th:text="${dto.id}"> &nbsp;&nbsp;</span>
+        <span th:text="${dto.text}"></span>
+    </div>
+</th:block>
+<hr>
+<!-- http:localhost:8080/test3?pageNo=1234 -->
+<a th:href="@{/test3(pageNo=${pageNo})}">TEST3이동</a>
+<hr>
+<!-- http:localhost:8080/test3/1234 -->
+<a th:href="@{/test3/{pageNo}(pageNo=${pageNo})}">TEST3이동</a>
+</body>
+</html>

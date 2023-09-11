@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- KAKAO SDK -->
+    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.3.0/kakao.min.js" integrity="sha384-70k0rrouSYPWJt7q9rSTKpiTfX6USlMYjZUtr1Du+9o4cGvhPAWxngdtVZDdErlh" crossorigin="anonymous"></script>
+    <script>
+        Kakao.init('888af18c95f08b9a2f7c2463f513dd46');
+    </script>
+
+</head>
+<body>
+<div id="kakao-add-channel-button"></div>
+
+<button onclick="joinChannel()">채널가입하기</button>
+
+
+<script>
+    Kakao.Channel.createAddChannelButton({
+        container: '#kakao-add-channel-button',
+        channelPublicId: '_YhVxdG' // 카카오톡 채널 홈 URL에 명시된 id로 설정합니다.
+    });
+
+    const joinChannel = ()=>{
+        console.log("Join Channel btn");
+        Kakao.Channel.addChannel({
+      channelPublicId: '_YhVxdG'
+    });}
+</script>
+</body>
+</html>
+

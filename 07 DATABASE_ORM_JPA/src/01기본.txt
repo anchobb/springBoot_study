@@ -1,0 +1,14 @@
+01 build.gradle
+- implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+02 application.properties
+
+03 TransactionManager
+- com.example.demo.config.TxConfig 의 설정 확인
+
+04 Entity 설정
+
+05 Repository 설정
+
+06 TestCode 확인
+
