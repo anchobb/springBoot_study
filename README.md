@@ -1,32 +1,4 @@
-# 08SPING_BOOT
-### 00 SETTING
-### 01 CONTROLLER_PARAMETER
-### 02 CONTROLLER_VALIDATION
-### 03 CONTROLLER_EXCEPTION
-### 04 DATABASE_DATASOURCE
-### 05 DATABASE_ORM_MYBATIS
-### 05-02 DATABASE_ORM_JPA - NEW
-### 06 BUSINESS_TRANSACTION
-### 07 PRESENTATION_RESTCONTROLLER
-### 07-02 PRESENTATION_RESTCONTROLLER_외부API - NEW
-### 08 FILEUPDOWNLOAD
-### 09 AOP
-### 10 FILTER_INTERCEPTOR
-### 11 LISTENER
-### 12 HANDLER_MAPPING
-### 13 SCHEDULED
-### 13-02 BATCH - NEW
-### 14 SPRING_SECURITY
-### 14-02 SPRING_SECURITY_OAUTH2인증 - NEW
-### 14-03 SPRING_SECURITY JWT TOKEN 인증
-##### ---------------------------------
-### 15 게시판 구현하기
-### 16 이미지 게시판 구현하기
-### 17 WEBSOCKET 사용해보기
 
-spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL5InnoDBDialect<br/>
-spring.jpa.database-platform = org.hibernate.dialect.MySQL5InnoDBDialect<br/>
- 
 
 
 
