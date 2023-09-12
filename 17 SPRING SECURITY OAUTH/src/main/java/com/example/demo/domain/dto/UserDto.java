@@ -8,4 +8,8 @@ public class UserDto {
 	private String password;
 	private String email;
 	private String role;
+
+	//OAUTH2
+	private String provider;
+	private String providerId;
 }

@@ -100,6 +100,9 @@ public class PrincipalDetailsOAuth2Service extends DefaultOAuth2UserService impl
         dto.setPassword(password);
         dto.setEmail(email);
         dto.setRole(role);
+        //OAUTH2 LOGOUT
+        dto.setProvider(provider);
+        dto.setProviderId(providerId);
         principalDetails.setUser(dto);
         principalDetails.setAccessToken(userRequest.getAccessToken().getTokenValue());
 
