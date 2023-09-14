@@ -1,0 +1,26 @@
+//-----------------------
+//Presentation Layer
+//-----------------------
+01 Controller
+
+02 RestController
+
+03 View File
+
+04 View static 자원 연결
+
+
+//-----------------------
+// Persistent Layer
+//-----------------------
+06 Entity
+
+08 Dto
+
+07 Repository
+
+//-----------------------
+// Business Layer
+//-----------------------
+05 Service
+
