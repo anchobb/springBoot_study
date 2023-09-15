@@ -49,7 +49,7 @@
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
                         <li class="nav-item  ms-5">
-                            <a class="nav-link  text-white" href="#">게시판</a>
+                            <a class="nav-link  text-white" href="/board/list">게시판</a>
                         </li>
                         <li class="nav-item  ms-5">
                             <a class="nav-link  text-white"   href="#">이미지 게시판</a>
@@ -90,43 +90,51 @@
                         <li class="breadcrumb-item"><a href="#">HOME</a></li>
                         <li class="breadcrumb-item"><a href="#">BOARD</a></li>
                         <li class="breadcrumb-item"><a href="#">LIST</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">POST</li>
+                        <li class="breadcrumb-item active" aria-current="page">READ</li>
                     </ol>
                 </nav>
                 <!-- title -->
                 <h3>BOARD READ</h3>
 
 
-                <form action="/board/update">
+                <div>
                     <input type="hidden" name="no">
 
                     <div class="mb-3 w-50">
+                        <label for="exampleFormControlInput2" class="form-label">No</label>
+                        <input type="text" name="no" class="form-control" id="exampleFormControlInput2" th:value="${boardDto.no}" readonly>
+                    </div>
+                    <div class="mb-3 w-50">
                         <label for="exampleFormControlInput1" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com" readonly>
+                        <input type="email" class="form-control" id="exampleFormControlInput1" th:value="${boardDto.username}" readonly>
                     </div>
                     <div class="mb-3 w-50">
                         <label for="ex2" class="form-label">Title</label>&nbsp;
-                        <input type="text" class="form-control" id="ex2" placeholder="Title" name="title" >
+                        <input type="text" class="form-control" id="ex2" placeholder="Title" name="title" th:value="${boardDto.title}" readonly>
                     </div>
                     <div class="mb-3 w-50">
-                        <label for="exampleFormControlTextarea1" class="form-label">Contents</label>
-                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                        <label for="exampleFormControlTextarea1" class="form-label" >Contents</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" th:text="${boardDto.content}" readonly></textarea>
                     </div>
                     <div class="mb-3  w-50">
-
+                        <th:block>
+                            <!-- 문자열을 쉼표(,)로 분할하고 각각의 항목을 출력합니다. -->
+                            <div th:each="i : ${#numbers.sequence(0, filenames.length-1)}" >
+                                <a th:href="@{/board/download(filename=${filenames[i]}) }">
+                                    <span th:text="${filenames[i]}"> </span>&nbsp;&nbsp;
+                                    ( <span th:text="${filesizes[i]}"> </span><span> Byte</span> )
+                                </a>
+                            </div>
+                        </th:block>
                     </div>
                     <div class="mb-3  w-50" >
-                        <button  class="btn btn-primary">수정하기</button>
+                        <a  class="btn btn-primary" th:href="@{/board/update(no=${boardDto.no})}">수정하기</a>
+                        <a  class="btn btn-warning delete_btn" th:data-no="${boardDto.no}" >삭제하기</a>
                         <a  href="javascript:history.go(-1)"  class="btn btn-primary">이전으로</a>
 
                     </div>
-                </form>
-
-
-
-
+                </div>
             </div>
-
         </section>
 
 
@@ -149,5 +157,21 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js" integrity="sha512-uMtXmF28A2Ab/JJO2t/vYhlaa/3ahUOgj1Zf27M5rOo8/+fcTUVH0/E0ll68njmjrLqOBjXM3V9NiPFL5ywWPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- common.js   -->
 <script src="/js/common.js"></script>
+<script>
+    const delete_btn_el = document.querySelector('.delete_btn');
+    delete_btn_el.addEventListener('click',function(){
+        const no = delete_btn_el.dataset.no;
+        axios.delete("/board/delete?no="+no)
+        .then(
+            response=>{console.log(response);
+                if(response.status === 200){
+                    location.href="/board/list";
+                }
+            }
+        )
+        .catch(error=>console.log(error));
+    });
+
+</script>
 </body>
 </html>
