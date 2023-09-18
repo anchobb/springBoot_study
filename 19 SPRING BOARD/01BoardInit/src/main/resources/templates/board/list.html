@@ -57,11 +57,19 @@
                 </div>
             </div>
 
-            <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <!--
+                SEARCH
+            -->
+            <form class="d-flex" action="/board/list">
+                <input type="hidden" name="pageNo" value="1"/>
+                <select name="type"  class="form-select me-2" style="width:120px;">
+                    <option value="title" selected>TITLE</option>
+                    <option value="username">WRITER</option>
+                    <option value="content">CONTENTS</option>
+                </select>
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" style="width:150px;" name="keyword">
                 <button class="btn btn-outline-light" type="submit">Search</button>
             </form>
-
         </nav>
 
 
@@ -137,7 +145,7 @@
 
                                     <!-- PREV      -->
                                     <li class="page-item" th:if="${pageDto.prev}">
-                                        <a class="page-link" th:href="@{/board/list(pageNo=${pageDto.nowBlock * pageDto.pagePerBlock - pageDto.pagePerBlock*2 + 1} )}" aria-label="Previous">
+                                        <a class="page-link" th:href="@{/board/list(pageNo=${pageDto.nowBlock * pageDto.pagePerBlock - pageDto.pagePerBlock*2 + 1},type=${pageDto.criteria.type},keyword=${pageDto.criteria.keyword} )}" aria-label="Previous">
                                             <span aria-hidden="true">&laquo;</span>
                                         </a>
                                     </li>
@@ -145,13 +153,13 @@
 
                                     <!-- PAGENATION -->
                                     <li class="page-item" th:each="i : ${#numbers.sequence(pageDto.startPage, pageDto.endPage)}"  >
-                                        <a class="page-link" th:href="@{/board/list(pageNo=${i})}" > <span th:text="${i}"></span> </a>
+                                        <a class="page-link" th:href="@{/board/list(pageNo=${i},type=${pageDto.criteria.type},keyword=${pageDto.criteria.keyword})}" > <span th:text="${i}"></span> </a>
                                     </li>
 
 
                                     <!-- NEXT -->
                                     <li class="page-item"  th:if="${pageDto.next}">
-                                        <a class="page-link" th:href="@{/board/list(pageNo=${pageDto.nowBlock*pageDto.pagePerBlock+1} )}" aria-label="Next">
+                                        <a class="page-link" th:href="@{/board/list(pageNo=${pageDto.nowBlock*pageDto.pagePerBlock+1},type=${pageDto.criteria.type},keyword=${pageDto.criteria.keyword} )}" aria-label="Next">
                                             <span aria-hidden="true">&raquo;</span>
                                         </a>
                                     </li>

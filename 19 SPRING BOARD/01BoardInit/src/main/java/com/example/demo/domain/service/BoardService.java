@@ -5,8 +5,11 @@ import com.example.demo.controller.BoardController;
 import com.example.demo.domain.dto.BoardDto;
 import com.example.demo.domain.dto.Criteria;
 import com.example.demo.domain.dto.PageDto;
+import com.example.demo.domain.dto.ReplyDto;
 import com.example.demo.domain.entity.Board;
+import com.example.demo.domain.entity.Reply;
 import com.example.demo.domain.repository.BoardRepository;
+import com.example.demo.domain.repository.ReplyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,16 +31,35 @@ public class BoardService {
     @Autowired
     private BoardRepository boardRepository;
 
+    @Autowired
+    private ReplyRepository replyRepository;
 
+
+    //모든 게시물 가져오기
     @Transactional(rollbackFor = SQLException.class)
     public Map<String,Object> GetBoardList(Criteria criteria) {
 
         Map<String,Object> returns = new HashMap<String,Object>();
 
 
-        //전체게시물 건수 받기
-        int totalcount = (int)boardRepository.count();
-        System.out.println("COUNT  :" + totalcount);
+        //전체게시물 건수 받기(type,Keyword가 적용된 count로 변경
+        //int totalcount = (int)boardRepository.count();
+        //--------------------------------------------------------
+        //SEARCH
+        //--------------------------------------------------------
+        int totalcount=0;
+        if(criteria!=null&& criteria.getType()!=null) {
+            if (criteria.getType().equals("title"))
+                totalcount = boardRepository.countWhereTitleKeyword(criteria.getKeyword());
+            else if (criteria.getType().equals("username"))
+                totalcount = boardRepository.countWhereUsernameKeyword(criteria.getKeyword());
+            else if (criteria.getType().equals("content"))
+                totalcount = boardRepository.countWhereContentKeyword(criteria.getKeyword());
+            else
+                totalcount = (int)boardRepository.count();
+        }
+        else
+            totalcount = (int)boardRepository.count();
 
         //PageDto 만들기
         PageDto pagedto = new PageDto(totalcount,criteria);
@@ -45,7 +67,27 @@ public class BoardService {
         //시작 게시물 번호 구하기(수정) - OFFSET
         int offset =(criteria.getPageno()-1) * criteria.getAmount();    //1page = 0, 2page = 10
 
-        List<Board> list  =  boardRepository.findBoardAmountStart(criteria.getAmount(),offset);
+        //--------------------------------------------------------
+        //SEARCH
+        //--------------------------------------------------------
+        List<Board> list = null;
+        if(criteria!=null&& criteria.getType()!=null) {
+            if (criteria.getType().equals("title")) {
+                list = boardRepository.findBoardTitleAmountStart(criteria.getKeyword(), pagedto.getCriteria().getAmount(), offset);
+                System.out.println("TITLE SEARCH!");
+                System.out.println(list);
+            } else if (criteria.getType().equals("username"))
+                list = boardRepository.findBoardUsernameAmountStart(criteria.getKeyword(), pagedto.getCriteria().getAmount(), offset);
+            else if (criteria.getType().equals("content"))
+                list = boardRepository.findBoardContentsAmountStart(criteria.getKeyword(), pagedto.getCriteria().getAmount(), offset);
+            else if (criteria.getType().equals("none"))
+                list = boardRepository.findBoardAmountStart(pagedto.getCriteria().getAmount(), offset);
+            else
+                list  =  boardRepository.findBoardAmountStart(pagedto.getCriteria().getAmount(),offset);
+        }
+        else
+            list  =  boardRepository.findBoardAmountStart(pagedto.getCriteria().getAmount(),offset);
+
 
         returns.put("list",list);
         returns.put("pageDto",pagedto);
@@ -289,5 +331,79 @@ public class BoardService {
 
     }
 
+
+    //COUNT
+    @Transactional(rollbackFor = SQLException.class)
+    public void countUp(Board board) {
+        board.setCount(board.getCount() + 1L);
+        boardRepository.save(board);
+    }
+
+    //ADD REPLY
+    public void addReply(Long bno, String contents, String username) {
+        Reply reply = new Reply();
+        Board board = new Board();
+        board.setNo(bno);
+
+        reply.setRno(null);
+        reply.setBoard(board);
+        reply.setUsername(username);
+        reply.setContent(contents);
+        reply.setRegdate(LocalDateTime.now());
+        reply.setLikecount(0L);
+        reply.setUnlikecount(0L);
+
+        replyRepository.save(reply);
+
+
+    }
+
+    public List<ReplyDto> getReplyList(Long bno) {
+        List<Reply> replyList =  replyRepository.GetReplyByBnoDesc(bno);
+
+        List<ReplyDto> returnReply  = new ArrayList();
+        ReplyDto dto = null;
+
+        if(!replyList.isEmpty()) {
+            for(int i=0;i<replyList.size();i++) {
+
+                dto = new ReplyDto();
+                dto.setBno(replyList.get(i).getBoard().getNo());
+                dto.setRno(replyList.get(i).getRno());
+                dto.setUsername(replyList.get(i).getUsername());
+                dto.setContent(replyList.get(i).getContent());
+                dto.setLikecount(replyList.get(i).getLikecount());
+                dto.setUnlikecount(replyList.get(i).getUnlikecount());
+                dto.setRegdate(replyList.get(i).getRegdate());
+
+                returnReply.add(dto);
+
+            }
+            return returnReply;
+        }
+
+        return null;
+    }
+
+    public Long getReplyCount(Long bno) {
+        return replyRepository.GetReplyCountByBnoDesc(bno);
+
+    }
+
+    public void deleteReply(Long rno) {
+        replyRepository.deleteById(rno);
+    }
+
+    public void thumbsUp(Long rno) {
+        Reply reply =  replyRepository.findById(rno).get();
+        reply.setLikecount(reply.getLikecount()+1L);
+        replyRepository.save(reply);
+    }
+
+    public void thumbsDown(Long rno) {
+        Reply reply =  replyRepository.findById(rno).get();
+        reply.setUnlikecount(reply.getUnlikecount()+1L);
+        replyRepository.save(reply);
+    }
 
 }

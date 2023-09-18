@@ -117,18 +117,19 @@
                         <textarea class="form-control" name="content" id="exampleFormControlTextarea1" rows="3" th:text="${boardDto.content}" ></textarea>
                     </div>
                     <div class="mb-3  w-50" style="border:1px solid lightgray; border-radius:5px; padding:3px;">
-                        <th:block>
-                            <!-- 문자열을 쉼표(,)로 분할하고 각각의 항목을 출력합니다. -->
-                            <div th:each="i : ${#numbers.sequence(0, filenames.length-1)}" style="display:flex; align-item:center;">
-                                <a th:href="@{/board/download(filename=${filenames[i]}) }">
-                                    <span th:text="${filenames[i]}"> </span>&nbsp;&nbsp;
-                                    ( <span th:text="${filesizes[i]}"> </span><span> Byte</span> )
-                                </a>
-                                <!--파일개별삭제를 위한 아이콘-->
-                                <a href="javascript:void(0)" style="text-decoration:none; color:black;"   >
-                                    <span class="material-symbols-outlined delete_file" th:data-filename="${filenames[i]}" th:data-no="${boardDto.no}">delete</span>
-                                </a>
+                        <th:block  >
+                            <div th:if="${filenames!=null}">
+                                <!-- 문자열을 쉼표(,)로 분할하고 각각의 항목을 출력합니다. -->
+                                <div th:each="i : ${#numbers.sequence(0, filenames.length-1)}" style="display:flex;align-item:center;"  >
+                                    <a th:href="@{/board/download(filename=${filenames[i]})}">
+                                        <span th:text="${filenames[i]}"> </span>&nbsp;&nbsp;
+                                        ( <span th:text="${filesizes[i]}"> </span><span> Byte</span> )
+                                    </a>
 
+                                    <a href="javascript:void(0)" style="text-decoration:none; color:black;"   >
+                                        <span class="material-symbols-outlined delete_file" th:data-filename="${filenames[i]}" th:data-no="${boardDto.no}">delete</span>
+                                    </a>
+                                </div>
                             </div>
                         </th:block>
                     </div>

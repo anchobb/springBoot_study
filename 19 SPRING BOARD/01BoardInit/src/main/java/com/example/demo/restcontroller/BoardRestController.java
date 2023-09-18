@@ -2,6 +2,7 @@ package com.example.demo.restcontroller;
 
 
 import com.example.demo.controller.BoardController;
+import com.example.demo.domain.dto.ReplyDto;
 import com.example.demo.domain.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/board")
@@ -73,6 +75,36 @@ public class BoardRestController {
         else
             return "failed";
 
+    }
+
+    //-------------------
+    // 댓글 추가
+    //-------------------
+    @GetMapping("/reply/add")
+    public void addReply(Long bno, String contents, String username){
+        log.info("GET /board/reply/add bno " + bno + " contents " + contents + " username " + username);
+        boardService.addReply(bno, contents, username);
+    }
+
+    //-------------------
+    // 댓글 조회
+    //-------------------
+    @GetMapping("/reply/list")
+    public List<ReplyDto> getListReply(Long bno){
+        log.info("GET /board/reply/list " + bno);
+        List<ReplyDto> list =  boardService.getReplyList(bno);
+        return list;
+    }
+
+    //-------------------
+    //댓글 카운트
+    //-------------------
+    @GetMapping("/reply/count")
+    public Long getCount(Long bno){
+        log.info("GET /board/reply/count " + bno);
+        Long cnt = boardService.getReplyCount(bno);
+
+        return cnt;
     }
 
 
