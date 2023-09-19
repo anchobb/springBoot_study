@@ -303,4 +303,9 @@ public class BoardController {
         return "redirect:/board/read?no="+bno;
     }
 
+    @GetMapping("/error")
+    public void error_page(){
+
+    }
+
 }

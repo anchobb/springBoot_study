@@ -1,14 +1,23 @@
 package com.example.demo.config;
 
 
+import com.example.demo.domain.repository.BoardRepository;
+import com.example.demo.interceptor.BoardInterceptor;
+import com.nimbusds.jose.proc.SecurityContext;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
+
+	@Autowired
+	private BoardRepository boardRepository;
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -24,6 +33,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	}
 
 
-
-
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new BoardInterceptor(boardRepository))
+				.addPathPatterns("/board/update")
+				.excludePathPatterns("/resources/**");
+	}
 }

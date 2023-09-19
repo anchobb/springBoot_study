@@ -48,6 +48,13 @@ dependencies {
 	implementation 'org.hibernate.validator:hibernate-validator'
 	implementation 'javax.validation:validation-api'
 
+	//SECURITY
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+
+	//OAUTH2
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
 
 
 

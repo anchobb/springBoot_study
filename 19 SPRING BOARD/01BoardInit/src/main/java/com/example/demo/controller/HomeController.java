@@ -15,6 +15,12 @@ public class HomeController {
         log.info("/GET /");
         return "index";
     }
+
+    @GetMapping("/login")
+    public void login_get(){
+
+    }
+
     @GetMapping("/templates")
     public void templates(){
         log.info("/GET /templates");
