@@ -85,7 +85,6 @@ public class PrincipalDetailsOAuth2Service extends DefaultOAuth2UserService   im
             User user = User.builder()
                     .username(username)
                     .password(password)
-                    .email(email)
                     .role(role)
                     .provider(provider)
                     .providerId(providerId)
@@ -103,7 +102,6 @@ public class PrincipalDetailsOAuth2Service extends DefaultOAuth2UserService   im
         UserDto dto = new UserDto();
         dto.setUsername(username);
         dto.setPassword(password);
-        dto.setEmail(email);
         dto.setRole(role);
         //OAUTH2 LOGOUT
         dto.setProvider(provider);
@@ -125,8 +123,11 @@ public class PrincipalDetailsOAuth2Service extends DefaultOAuth2UserService   im
         UserDto dto = new UserDto();
         dto.setUsername(user.get().getUsername());
         dto.setPassword(user.get().getPassword());
-        dto.setEmail(user.get().getEmail());
+        dto.setPhone(user.get().getPhone());
         dto.setRole(user.get().getRole());
+        dto.setZipcode(user.get().getZipcode());
+        dto.setAddr1(user.get().getAddr1());
+        dto.setAddr2(user.get().getAddr2());
 
         PrincipalDetails principalDetails = new PrincipalDetails();
         principalDetails.setUser(dto);
