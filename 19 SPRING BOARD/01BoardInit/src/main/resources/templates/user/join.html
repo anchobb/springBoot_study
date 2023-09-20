@@ -79,10 +79,12 @@
                     <div class="body">
                         <form class="joinform" name="joinform" action="/user/join" method="post" onsubmit="return false">
                             <div>
-                                <label>이메일계정</label> &nbsp;&nbsp; <span th:text="${username}" style="font-size:0.7rem; color:red;"></span>
+                                <label>이메일계정</label> &nbsp;&nbsp; <span th:text="${username}" style="font-size:0.7rem; color:red;" class="username_msg"></span>
                                 <div style="display:flex;">
-                                    <input name="username" class="form-control" placeholder="이메일 계정 입력">
-                                    <button class="btn btn-secondary" style="width:80px; margin-left:5px;">인증</button>
+                                    <input name="username" class="form-control username" placeholder="이메일 계정 입력">
+                                    <button type="button" class="btn btn-secondary email_auth_btn" style="width:80px; margin-left:5px;" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                        인증
+                                    </button>
                                 </div>
                             </div>
                             <div>
@@ -100,13 +102,13 @@
                             <div>
                                 <label>우편번호 검색</label>
                                 <div style="display:flex;">
-                                    <input name="zipcode" class="form-control" placeholder="우편번호 입력">
-                                    <button class="btn btn-secondary" style="width:80px; margin-left:5px;">검색</button>
+                                    <input name="zipcode" class="form-control zipcode" placeholder="우편번호 입력">
+                                    <button class="btn btn-secondary search_addr_btn" style="width:80px; margin-left:5px;">검색</button>
                                 </div>
                             </div>
                             <div>
                                 <label>기본 주소</label>
-                                <input name="addr1" class="form-control" placeholder="기본 주소 입력">
+                                <input name="addr1" class="form-control addr1" placeholder="기본 주소 입력">
                             </div>
                             <div>
                                 <label>상세 주소</label>
@@ -151,10 +153,102 @@
 
 
 
+    <!-- Email 인증 Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">인증 코드 입력</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form style="display:flex; justify-content:space-between;" onsubmit="return false">
+                        <div style="width:100%;">
+                            <input class="form-control code">
+                        </div>
+                        <div style="width:80px; margin-left:5px; text-align:right;" >
+                            <button class="btn btn-primary email_auth_btn_2">전송</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">재전송</button>
+                    <button type="button" class="btn btn-secondary modal_exit" data-bs-dismiss="modal">종료</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
 
     <!-- axios -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js" integrity="sha512-uMtXmF28A2Ab/JJO2t/vYhlaa/3ahUOgj1Zf27M5rOo8/+fcTUVH0/E0ll68njmjrLqOBjXM3V9NiPFL5ywWPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- common.js   -->
     <script src="/js/common.js"></script>
+
+    <script>
+        //Email 발송
+        const email_auth_btn_el = document.querySelector('.email_auth_btn'); //버튼 찾기
+        const username = document.querySelector('.username'); //input태그 값 찾기
+        email_auth_btn_el.addEventListener('click', function(){
+            //alert('TEST');
+            axios.get('/user/auth/email/'+username.value) //비동기요청 - restcontroller에서 url만들고 요청하기~
+            .then(response=>{console.log(response);})
+            .catch(error=>{});
+        });
+
+        //Code 발송
+        const email_auth_btn_2_el = document.querySelector('.email_auth_btn_2'); //버튼 찾기
+        const code = document.querySelector('.code'); //input태그 값 찾기
+        email_auth_btn_2_el.addEventListener('click', function(){
+            //alert('TEST');
+
+            const username_msg = document.querySelector('.username_msg');
+
+
+            axios.get('/user/auth/confirm/'+code.value) //비동기요청 - restcontroller에서 url만들고 요청하기~
+            .then(response=>{
+                console.log(response);
+                if(response.data === 'success'){
+                    username_msg.innerHTML = "이메일 인증 성공..!";
+                    username_msg.style.color = 'green';
+                }else{
+                    username_msg.innerHTML = "이메일 인증 실패..!";
+                    username_msg.style.color = 'red';
+                }
+                //모달창 종료
+                const modal_exit = document.querySelector('.modal_exit');
+                modal_exit.click();
+
+            })
+            .catch(error=>{});
+        });
+
+    </script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script>
+        //주소 검색 API
+        const search_addr_btn = document.querySelector('.search_addr_btn');
+        search_addr_btn.addEventListener('click',function(){
+        new daum.Postcode({
+            oncomplete: function(data) {
+               console.log(data);
+               const zipcode = document.querySelector('.zipcode');
+               const addr1 = document.querySelector('.addr1');
+
+               if(data.userSelectedType === 'R'){
+                    addr1.value = data.roadAddress;
+               }else{
+                    addr1.value = data.jibunAddress;
+               }
+
+               zipcode.value = data.zonecode;
+            }
+        }).open();
+
+        });
+
+    </script>
 </body>
 </html>

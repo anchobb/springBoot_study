@@ -1,5 +1,6 @@
 package com.example.demo.domain.dto;
 
+import com.example.demo.domain.entity.User;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -26,4 +27,18 @@ public class UserDto {
 	//OAUTH2
 	private String provider;
 	private String providerId;
+
+	public static User dtoToEntity(UserDto dto){
+		User user = User.builder()
+				.username(dto.getUsername())
+				.password(dto.getPassword())
+				.role(dto.getRole())
+				.phone(dto.getPhone())
+				.zipcode(dto.getZipcode())
+				.addr1(dto.getAddr1())
+				.addr2(dto.getAddr2())
+				.build();
+
+		return user;
+	}
 }
